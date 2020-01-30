@@ -1,10 +1,8 @@
 
 import tensorflow as tf
-from tensorflow.python.keras import Sequential
-from tensorflow.python.keras.layers import Conv1D, Flatten
 
-from src.batch_generator import BatchGenerator
-from src.custom_layers import ConcatNoise, CenteredConv1D, ConcatFourier, SkipConnection
+from src.utils.batch_generator import BatchGenerator
+from src.neural_network.custom_layers import CenteredConv1D, ConcatFourier
 
 
 class Predictor(tf.keras.Model):

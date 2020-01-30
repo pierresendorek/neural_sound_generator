@@ -2,8 +2,8 @@ import numpy as np
 from scipy.io import wavfile
 import os
 
-from src.complex_numbers_np import div_phases, normalize_to_unit, modulus
-from src.feature_engineering import get_fourier_transform_on_apodized, expand_dim_1_32_bits
+from src.utils.complex_numbers_np import div_phases, normalize_to_unit, modulus
+from src.utils.feature_engineering import get_fourier_transform_on_apodized, expand_dim_1_32_bits
 
 
 class BatchGenerator:

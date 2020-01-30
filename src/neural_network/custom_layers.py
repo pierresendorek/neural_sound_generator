@@ -1,7 +1,6 @@
 import tensorflow as tf
-from typing import List
 
-from src.fourier import get_half_period_fourier_basis_as_rows
+from src.utils.fourier import get_half_period_fourier_basis_as_rows
 
 
 class CenteredConv1D(tf.keras.layers.Layer):

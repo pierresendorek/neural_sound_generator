@@ -1,4 +1,4 @@
-from src.complex_numbers_np import normalize_to_unit, mult
+from src.utils.complex_numbers_np import normalize_to_unit, mult
 import numpy as np
 
 

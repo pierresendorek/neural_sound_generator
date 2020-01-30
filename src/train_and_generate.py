@@ -1,10 +1,9 @@
 import tensorflow as tf
-from src.batch_generator import BatchGenerator
-from src.complex_numbers_np import normalize_to_unit, mult
-from src.feature_engineering import reconstruct, expand_dim_1_32_bits
-from src.predictor import Predictor
+from src.utils.batch_generator import BatchGenerator
+from src.utils.complex_numbers_np import normalize_to_unit, mult
+from src.utils.feature_engineering import reconstruct, expand_dim_1_32_bits
+from src.neural_network.predictor import Predictor
 from math import pi
-import src.init_cudnn
 import numpy as np
 from scipy.io import wavfile
 
