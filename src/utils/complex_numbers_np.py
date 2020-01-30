@@ -15,7 +15,7 @@ def conj(z):
 
 def normalize_to_unit(z):
     a, b = z
-    norm = modulus(z)
+    norm = modulus(z) + 1E-14
     return (a/norm, b/norm)
 
 

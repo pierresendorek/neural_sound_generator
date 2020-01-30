@@ -1,25 +1,29 @@
-
 import tensorflow as tf
-
 from src.utils.batch_generator import BatchGenerator
 from src.neural_network.custom_layers import CenteredConv1D, ConcatFourier
+from tensorflow.python.keras.layers import Dense, Flatten
+from tensorflow.python.keras.layers import BatchNormalization
+from src.utils import init_cudnn
 
 
 class Predictor(tf.keras.Model):
 
     def __init__(self):
         super(Predictor, self).__init__()
+
+        #self.dense_layers = [Dense(units=i, activation='tanh') for i in [512, 512, 1024]]
         self.conv_layers = [CenteredConv1D(filters=30, kernel_size=10, activation="tanh", dilation_rate=2**i) for i in range(9)]
 
         self.delta_phase_mu = CenteredConv1D(filters=2, kernel_size=10, activation=None, dilation_rate=1)
         self.log_delta_phase_sigma2 = CenteredConv1D(filters=2, kernel_size=10, activation=None, dilation_rate=1)
 
-        self.amplitude_mu = CenteredConv1D(filters=1, kernel_size=10, activation="sigmoid", dilation_rate=1)
+        self.amplitude_mu = CenteredConv1D(filters=1, kernel_size=10, activation='sigmoid', dilation_rate=1)
         self.log_amplitude_sigma2 = CenteredConv1D(filters=1, kernel_size=10, activation=None, dilation_rate=1)
 
         self.concat_fourier = ConcatFourier(nb_vectors=4)
 
     def call(self, x, **kwargs):
+
         prev_out = self.concat_fourier(x)
 
         for i, conv_layer in enumerate(self.conv_layers):

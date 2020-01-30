@@ -32,12 +32,12 @@ class Trainer:
                 phase_list, features, target_amp, target_delta_phase = batch_generator.draw_batch(window_len, 100)
                 amplitude_mu, log_amplitude_sigma2, delta_phase_mu, log_delta_phase_sigma2 = predictor(features)
                 loss = self.neg_log_likelihood(target_amp, amplitude_mu, log_amplitude_sigma2) + \
-                       0.1 * self.neg_log_likelihood(target_delta_phase, delta_phase_mu, log_delta_phase_sigma2)
+                       1E-4 * self.neg_log_likelihood(target_delta_phase, delta_phase_mu, log_delta_phase_sigma2)
 
             gradients = tape.gradient(loss, predictor.trainable_variables)
             optimizer.apply_gradients(zip(gradients, predictor.trainable_variables))
             print(i_step, loss)
-            if (i_step % 20) == 0:
+            if (i_step % 100) == 0:
                 generate_sound(200, phase_list, features, predictor, window_len)
 
 ###########
@@ -54,9 +54,9 @@ def generate_sound(nb_steps, phase_list, features, predictor, window_len):
     y = np.zeros([(nb_steps + 1) * window_len])
 
     for i_step in range(nb_steps):
-        amplitude_mu, log_amplitude_sigma2, delta_phase_mu, log_delta_phase_sigma2 = predictor(features)
+        log_amplitude_mu, log_amplitude_sigma2, delta_phase_mu, log_delta_phase_sigma2 = predictor(features)
 
-        amp = generate_amplitude(amplitude_mu, log_amplitude_sigma2)
+        amp = generate_amplitude(log_amplitude_mu, log_amplitude_sigma2)
         delta_phase = generate_delta_phase(delta_phase_mu, log_delta_phase_sigma2)
 
         sound = reconstruct(phase, delta_phase, amp)
@@ -74,11 +74,11 @@ def generate_sound(nb_steps, phase_list, features, predictor, window_len):
     wavfile.write("../data/out.wav", 44100, y)
 
 def generate_amplitude(amplitude_mu, log_amplitude_sigma2):
-    return amplitude_mu[0, :, 0].numpy() + np.random.randn(1024) * np.exp(log_amplitude_sigma2[0, :, 0].numpy())
+    return amplitude_mu[0, :, 0].numpy() + np.random.randn(1024) * np.exp(0.5 * log_amplitude_sigma2[0, :, 0].numpy())
 
 
 def generate_delta_phase(delta_phase_mu, log_delta_phase_sigma2):
-    delta_phase = delta_phase_mu.numpy() + np.random.randn(1024, 2) * np.exp(log_delta_phase_sigma2.numpy())
+    delta_phase = delta_phase_mu.numpy() + np.random.randn(1024, 2) * np.exp(0.5 * log_delta_phase_sigma2.numpy())
     delta_phase_complex = (delta_phase[0, :, 0], delta_phase[0, :, 1])
     delta_phase_complex = normalize_to_unit(delta_phase_complex)
     return delta_phase_complex
