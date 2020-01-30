@@ -6,7 +6,7 @@ import os
 class BatchGenerator:
     def __init__(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        sampling_frequency, sound = wavfile.read(dir_path + "/../../data/pierre_parle.wav")
+        sampling_frequency, sound = wavfile.read(dir_path + "/../../data/claude-debussy-clair-de-lune.wav")
         normalized_sound = 0.5 * (sound - np.mean(sound)) / np.std(sound)
         cut_samples = len(normalized_sound) // 100
         self.sound = normalized_sound[cut_samples:-cut_samples]

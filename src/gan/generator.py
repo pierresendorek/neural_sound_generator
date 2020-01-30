@@ -13,7 +13,8 @@ class Generator(tf.keras.Model):
         self.window_len = window_len
 
         # prev window feature extractor
-        self.prev_window_fe = Sequential([Flatten()])
+        self.prev_window_fe = Sequential([
+                                          Flatten()])
 
         self.sound_gen = Sequential([  ConcatFourier(),
                                        CenteredConv1D(filters=256, kernel_size=10, activation="tanh", dilation_rate=1),

@@ -14,6 +14,6 @@ def get_half_period_fourier_basis_as_rows(nb_points):
     f = dft(2*nb_points)
     f_real = np.real(f)
     f_imag = np.imag(f)
-    return np.concatenate([f_real[:nb_points, :nb_points//16], f_imag[:nb_points, :nb_points//16]], axis=1).astype(np.float32)
+    return np.concatenate([f_real[:nb_points, :nb_points//4], f_imag[:nb_points, :nb_points//4]], axis=1).astype(np.float32)
 
 
