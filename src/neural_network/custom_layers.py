@@ -1,8 +1,6 @@
 import tensorflow as tf
-from typing import List
-from tensorflow.keras.layers import GaussianNoise
 
-from src.fourier import get_half_period_fourier_basis_as_rows
+from src.utils.fourier import get_half_period_fourier_basis_as_rows
 
 
 class CenteredConv1D(tf.keras.layers.Layer):
@@ -64,14 +62,15 @@ class ConcatNoise(tf.keras.layers.Layer):
 
 
 class ConcatFourier(tf.keras.layers.Layer):
-    def __init__(self):
+    def __init__(self, nb_vectors):
         super(ConcatFourier, self).__init__()
         self.basis_initialized = False
+        self.nb_vectors = nb_vectors
 
     def call(self, x):
         if not self.basis_initialized:
             window_len = x.shape[1]
-            self.fourier_basis = tf.expand_dims(tf.constant(get_half_period_fourier_basis_as_rows(window_len), dtype=tf.float32), 0)
+            self.fourier_basis = tf.expand_dims(tf.constant(get_half_period_fourier_basis_as_rows(window_len, self.nb_vectors), dtype=tf.float32), 0)
             self.basis_initialized = True
 
         tiled_fourier = tf.tile(self.fourier_basis, multiples=(x.shape[0], 1, 1))
@@ -94,7 +93,7 @@ class ParallelLayers(tf.keras.layers.Layer):
 
 if __name__ == "__main__":
     import numpy as np
-    concat_fourier = ConcatFourier(window_len=1024)
+    concat_fourier = ConcatFourier(window_len=1024, nb_vectors=10)
     x = np.zeros([2, 1024, 1]).astype(np.float32)
     res = concat_fourier(x)
 
