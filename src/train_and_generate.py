@@ -6,7 +6,7 @@ from src.neural_network.predictor import Predictor
 from math import pi
 import numpy as np
 from scipy.io import wavfile
-
+from src.utils import init_cudnn
 
 class Trainer:
 
@@ -29,7 +29,7 @@ class Trainer:
 
         for i_step in range(10**5):
             with tf.GradientTape() as tape:
-                phase_list, features, target_amp, target_delta_phase = batch_generator.draw_batch(window_len, 10)
+                phase_list, features, target_amp, target_delta_phase = batch_generator.draw_batch(window_len, 100)
                 amplitude_mu, log_amplitude_sigma2, delta_phase_mu, log_delta_phase_sigma2 = predictor(features)
                 loss = self.neg_log_likelihood(target_amp, amplitude_mu, log_amplitude_sigma2) + \
                        0.1 * self.neg_log_likelihood(target_delta_phase, delta_phase_mu, log_delta_phase_sigma2)
